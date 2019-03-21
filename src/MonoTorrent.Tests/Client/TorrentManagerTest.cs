@@ -55,16 +55,21 @@ namespace MonoTorrent.Client
             Assert.Fail ("The outgoing connection should've thrown an exception");
         }
 
-        [Test]
-        [ExpectedException (typeof (InvalidOperationException))]
+        [Test] 
         public void AddPeers_PrivateTorrent ()
         {
-            // You can't manually add peers to private torrents
-            var dict = (BEncodedDictionary) rig.TorrentDict["info"];
-            dict ["private"] = (BEncodedString) "1";
-            Torrent t = Torrent.Load (rig.TorrentDict);
-            TorrentManager manager = new TorrentManager (t, "path", new TorrentSettings ());
-            manager.AddPeers (new Peer ("id", new Uri ("tcp:://whatever.com")));
+            Assert.Throws<InvalidOperationException>(
+            () =>
+            {
+                // You can't manually add peers to private torrents
+                var dict = (BEncodedDictionary)rig.TorrentDict["info"];
+                dict["private"] = (BEncodedString)"1";
+                Torrent t = Torrent.Load(rig.TorrentDict);
+                TorrentManager manager = new TorrentManager(t, "path", new TorrentSettings());
+                manager.AddPeers(new Peer("id", new Uri("tcp:://whatever.com")));
+            });
+
+            
         }
 
         [Test]

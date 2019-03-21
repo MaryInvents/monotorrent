@@ -25,18 +25,24 @@ namespace MonoTorrent.Common
             Assert.AreEqual(hash, other, "#2");
         }
 
-        [Test]
-        [ExpectedException (typeof(ArgumentException))]
+        [Test] 
         public void InvalidHex()
         {
-            InfoHash.FromHex("123123123123123123123");
+            Assert.Throws<ArgumentException>(
+               () =>
+               {
+                   InfoHash.FromHex("123123123123123123123");
+               });
         }
 
-        [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Test] 
         public void NullHex()
         {
-            InfoHash.FromHex(null);
+            Assert.Throws<ArgumentNullException>(
+                  () =>
+                  {
+                      InfoHash.FromHex(null);
+                  });
         }
     }
 }

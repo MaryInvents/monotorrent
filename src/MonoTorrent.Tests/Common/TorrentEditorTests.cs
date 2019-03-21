@@ -1,7 +1,6 @@
-using System;
-
-using NUnit.Framework;
 using MonoTorrent.BEncoding;
+using NUnit.Framework;
+using System;
 
 namespace MonoTorrent.Common
 {
@@ -9,44 +8,50 @@ namespace MonoTorrent.Common
     public class TorrentEditorTests
     {
         [Test]
-        public void EditingCreatesCopy ()
+        public void EditingCreatesCopy()
         {
-            var d = Create ("comment", "a");
-            var editor = new TorrentEditor (d);
+            BEncodedDictionary d = Create("comment", "a");
+            TorrentEditor editor = new TorrentEditor(d);
             editor.Comment = "b";
-            Assert.AreEqual ("a", d ["comment"].ToString (), "#1");
+            Assert.AreEqual("a", d["comment"].ToString(), "#1");
         }
 
         [Test]
-        public void EditComment ()
+        public void EditComment()
         {
-            var d = Create ("comment", "a");
-            var editor = new TorrentEditor (d);
+            BEncodedDictionary d = Create("comment", "a");
+            TorrentEditor editor = new TorrentEditor(d);
             editor.Comment = "b";
-            d = editor.ToDictionary ();
-            Assert.AreEqual ("b", d ["comment"].ToString (), "#1");
+            d = editor.ToDictionary();
+            Assert.AreEqual("b", d["comment"].ToString(), "#1");
         }
 
         [Test]
-        [ExpectedException (typeof (InvalidOperationException))]
-        public void ReplaceInfoDict ()
+        public void ReplaceInfoDict()
         {
-            var editor = new TorrentEditor (new BEncodedDictionary ()) { CanEditSecureMetadata = false };
-            editor.SetCustom ("info", new BEncodedDictionary ());
+            Assert.Throws<InvalidOperationException>(
+                     () =>
+                     {
+                         TorrentEditor editor = new TorrentEditor(new BEncodedDictionary()) { CanEditSecureMetadata = false };
+                         editor.SetCustom("info", new BEncodedDictionary());
+                     });
         }
 
         [Test]
-        [ExpectedException (typeof (InvalidOperationException))]
-        public void EditProtectedProperty_NotAllowed ()
+        public void EditProtectedProperty_NotAllowed()
         {
-            var editor = new TorrentEditor (new BEncodedDictionary ()) { CanEditSecureMetadata = false };
-            editor.PieceLength = 16;
+            Assert.Throws<InvalidOperationException>(
+                        () =>
+                        {
+                            TorrentEditor editor = new TorrentEditor(new BEncodedDictionary()) { CanEditSecureMetadata = false };
+                            editor.PieceLength = 16;
+                        });
         }
 
-        BEncodedDictionary Create (string key, string value)
+        private BEncodedDictionary Create(string key, string value)
         {
-            var d = new BEncodedDictionary ();
-            d.Add (key, (BEncodedString) value);
+            BEncodedDictionary d = new BEncodedDictionary();
+            d.Add(key, (BEncodedString)value);
             return d;
         }
     }
